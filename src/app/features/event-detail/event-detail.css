@@ -22,8 +22,16 @@
   color: var(--accent);
 }
 
-.placeholder {
-  border-style: dashed;
+.orders {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.orders__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .page a {
