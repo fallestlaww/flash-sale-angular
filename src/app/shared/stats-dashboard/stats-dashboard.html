@@ -1,0 +1,36 @@
+<div class="dash">
+  <div class="dash__head">
+    <h2>Self-Redis cache stats</h2>
+    @if (error()) {
+      <span class="dash__err">{{ error() }}</span>
+    }
+  </div>
+
+  @if (stats(); as s) {
+    <div class="tiles">
+      <div class="tile tile--accent">
+        <span class="tile__v">{{ s.hitRate * 100 | number: '1.0-1' }}%</span>
+        <span class="tile__l">hit rate</span>
+      </div>
+      <div class="tile"><span class="tile__v">{{ s.hits }}</span><span class="tile__l">hits</span></div>
+      <div class="tile"><span class="tile__v">{{ s.misses }}</span><span class="tile__l">misses</span></div>
+      <div class="tile">
+        <span class="tile__v">{{ s.evictions }}</span><span class="tile__l">evictions</span>
+      </div>
+      <div class="tile">
+        <span class="tile__v">{{ s.expirations }}</span><span class="tile__l">expirations</span>
+      </div>
+      <div class="tile">
+        <span class="tile__v">{{ s.requests }}</span><span class="tile__l">requests</span>
+      </div>
+      <div class="tile"><span class="tile__v">{{ s.size }}</span><span class="tile__l">size</span></div>
+    </div>
+
+    <div class="spark-wrap">
+      <span class="tile__l">hit rate over time</span>
+      <app-sparkline [values]="history()" />
+    </div>
+  } @else if (!error()) {
+    <p class="muted">Loading stats…</p>
+  }
+</div>

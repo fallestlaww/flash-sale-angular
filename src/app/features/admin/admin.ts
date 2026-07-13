@@ -5,10 +5,11 @@ import { ApiService } from '../../core/api.service';
 import { CatalogService } from '../../core/catalog.service';
 import { ToastService } from '../../core/toast.service';
 import { EventResponse } from '../../core/models';
+import { StatsDashboard } from '../../shared/stats-dashboard/stats-dashboard';
 
 @Component({
   selector: 'app-admin',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, StatsDashboard],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './admin.html',
   styleUrl: './admin.css',

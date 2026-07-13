@@ -1,0 +1,91 @@
+<section class="page">
+  <h1>Demo lab</h1>
+  <p class="muted">
+    Batch-fires POST /orders to visualize Self-Redis: atomic stock (oversell) and the
+    fixed-window rate-limit. Needs a running backend and an existing event.
+  </p>
+
+  <div class="card shared">
+    <label class="field">
+      Event ID
+      <input type="number" min="1" [(ngModel)]="eventId" [ngModelOptions]="{ standalone: true }" />
+    </label>
+    <label class="field">
+      Qty per order
+      <input type="number" min="1" [(ngModel)]="qty" [ngModelOptions]="{ standalone: true }" />
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>Oversell</h2>
+    <p class="muted">
+      N orders spread across K distinct users (avoids rate-limit). Expect ~stock × 201, the
+      rest × 409 (atomic decrement on the backend).
+    </p>
+    <div class="row">
+      <label class="field">
+        Requests (N)
+        <input type="number" min="1" [(ngModel)]="oversellN" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <label class="field">
+        Distinct users (K)
+        <input
+          type="number"
+          min="1"
+          [(ngModel)]="oversellUsers"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </label>
+      <button type="button" (click)="runOversell()" [disabled]="oversellRunning()">
+        {{ oversellRunning() ? 'Running…' : 'Run oversell' }}
+      </button>
+    </div>
+
+    @if (oversellResult(); as r) {
+      <div class="bars">
+        <div class="bar bar--ok" [style.flex]="r.ok"></div>
+        <div class="bar bar--conflict" [style.flex]="r.conflict"></div>
+        <div class="bar bar--rate" [style.flex]="r.rateLimited"></div>
+        <div class="bar bar--other" [style.flex]="r.other"></div>
+      </div>
+      <ul class="legend">
+        <li><span class="dot dot--ok"></span> 201 created: {{ r.ok }}</li>
+        <li><span class="dot dot--conflict"></span> 409 sold-out: {{ r.conflict }}</li>
+        <li><span class="dot dot--rate"></span> 429 rate-limited: {{ r.rateLimited }}</li>
+        <li><span class="dot dot--other"></span> other: {{ r.other }}</li>
+      </ul>
+    }
+  </div>
+
+  <div class="card">
+    <h2>Rate-limit</h2>
+    <p class="muted">
+      Spam N orders from ONE user (current X-User-Id). First ~20 pass (201/409), the rest → 429
+      (60s fixed window).
+    </p>
+    <div class="row">
+      <label class="field">
+        Requests (spam)
+        <input type="number" min="1" [(ngModel)]="spamN" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <button type="button" (click)="runRateLimit()" [disabled]="rateRunning()">
+        {{ rateRunning() ? 'Running…' : 'Run spam' }}
+      </button>
+    </div>
+
+    @if (rateResult(); as r) {
+      <div class="bars">
+        <div class="bar bar--ok" [style.flex]="r.ok"></div>
+        <div class="bar bar--conflict" [style.flex]="r.conflict"></div>
+        <div class="bar bar--rate" [style.flex]="r.rateLimited"></div>
+        <div class="bar bar--other" [style.flex]="r.other"></div>
+      </div>
+      <ul class="legend">
+        <li><span class="dot dot--ok"></span> 201 created: {{ r.ok }}</li>
+        <li><span class="dot dot--conflict"></span> 409 conflict: {{ r.conflict }}</li>
+        <li><span class="dot dot--rate"></span> 429 rate-limited: {{ r.rateLimited }}</li>
+        <li><span class="dot dot--other"></span> other: {{ r.other }}</li>
+      </ul>
+    }
+  </div>
+</section>

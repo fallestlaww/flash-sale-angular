@@ -1,8 +1,9 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { SILENT } from './http-context';
 import {
+  AppError,
   CreateEventRequest,
   CreateOrderRequest,
   EventResponse,
@@ -29,6 +30,19 @@ export class ApiService {
     });
   }
 
+  createOrderRaw(userId: number, body: CreateOrderRequest, idempotencyKey: string): Observable<number> {
+    return this.http
+      .post(`${this.base}/orders`, body, {
+        headers: { 'X-User-Id': String(userId), 'Idempotency-Key': idempotencyKey },
+        context: new HttpContext().set(SILENT, true),
+        observe: 'response',
+      })
+      .pipe(
+        map((res) => res.status),
+        catchError((e: AppError) => of(e.status)),
+      );
+  }
+
   payOrder(id: number): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(`${this.base}/orders/${id}/pay`, {});
   }
@@ -43,7 +57,9 @@ export class ApiService {
     });
   }
 
-  getCacheStats(): Observable<StatsResponse> {
-    return this.http.get<StatsResponse>(`${this.base}/admin/cache-stats`);
+  getCacheStats(silent = false): Observable<StatsResponse> {
+    return this.http.get<StatsResponse>(`${this.base}/admin/cache-stats`, {
+      context: new HttpContext().set(SILENT, silent),
+    });
   }
 }
