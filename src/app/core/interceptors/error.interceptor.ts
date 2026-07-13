@@ -4,7 +4,6 @@ import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../toast.service';
 import { AppError } from '../models';
 
-// Default human-readable texts per HTTP status (the backend message takes priority).
 const MESSAGES: Record<number, string> = {
   400: 'Bad request',
   404: 'Not found',
@@ -14,11 +13,6 @@ const MESSAGES: Record<number, string> = {
   503: 'Hot-state store unavailable, please retry',
 };
 
-/**
- * Centralized error mapping: HttpErrorResponse -> AppError {status,message},
- * plus a global toast. No auto-retries (to avoid spawning Idempotency-Keys and
- * hammering the rate limit).
- */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toast = inject(ToastService);
   return next(req).pipe(

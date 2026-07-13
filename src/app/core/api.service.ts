@@ -9,16 +9,9 @@ import {
   StatsResponse,
 } from './models';
 
-/**
- * Single typed layer over the REST API (:8080). X-User-Id for /orders is added
- * by userIdInterceptor; the Idempotency-Key is tied to a specific attempt and is
- * passed as an argument to createOrder rather than by an interceptor.
- */
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  // All requests go to '/api'; the dev proxy rewrites them to sale-service :8080
-  // (see proxy.conf.json). In prod the frontend is served behind the same origin/proxy.
   private readonly base = '/api';
 
   getEvent(id: number): Observable<EventResponse> {

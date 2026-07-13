@@ -1,40 +1,54 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { JsonPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { catchError, forkJoin, of } from 'rxjs';
 import { ApiService } from '../../core/api.service';
-import { ToastService } from '../../core/toast.service';
-import { EventResponse } from '../../core/models';
+import { CatalogService } from '../../core/catalog.service';
+import { AppError, EventResponse } from '../../core/models';
+import { EventCard } from '../../shared/event-card/event-card';
 
 @Component({
   selector: 'app-catalog',
-  imports: [FormsModule, JsonPipe],
+  imports: [RouterLink, EventCard],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './catalog.html',
   styleUrl: './catalog.css',
 })
 export class Catalog {
   private readonly api = inject(ApiService);
-  private readonly toast = inject(ToastService);
+  private readonly catalog = inject(CatalogService);
 
-  // FE-0 smoke check: proves the whole HTTP stack works end-to-end
-  // (proxy -> :8080, X-User-Id/error interceptors, ApiError mapping).
-  probeId = 1;
   readonly loading = signal(false);
-  readonly lastEvent = signal<EventResponse | null>(null);
+  readonly events = signal<EventResponse[]>([]);
+  readonly loadError = signal(false);
 
-  probe(): void {
+  constructor() {
+    this.load();
+  }
+
+  load(): void {
+    const ids = this.catalog.eventIds();
+    if (ids.length === 0) {
+      this.events.set([]);
+      return;
+    }
     this.loading.set(true);
-    this.lastEvent.set(null);
-    this.api.getEvent(this.probeId).subscribe({
-      next: (ev) => {
-        this.lastEvent.set(ev);
-        this.loading.set(false);
-        this.toast.push(`OK: event #${ev.id} "${ev.name}"`, 'success');
-      },
-      error: () => {
-        // The error toast was already shown by errorInterceptor.
-        this.loading.set(false);
-      },
+    this.loadError.set(false);
+    forkJoin(
+      ids.map((id) =>
+        this.api.getEvent(id).pipe(
+          catchError((err: AppError) => {
+            if (err.status === 404) {
+              this.catalog.removeEventId(id);
+            } else {
+              this.loadError.set(true);
+            }
+            return of(null);
+          }),
+        ),
+      ),
+    ).subscribe((results) => {
+      this.events.set(results.filter((e): e is EventResponse => e !== null));
+      this.loading.set(false);
     });
   }
 }

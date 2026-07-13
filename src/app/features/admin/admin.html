@@ -1,0 +1,32 @@
+<section class="page">
+  <h1>Admin — create event</h1>
+  <p class="muted">POST /events. The created event is added to your local catalog.</p>
+
+  <form class="card form" (ngSubmit)="submit()">
+    <label class="field">
+      Name
+      <input type="text" name="name" [(ngModel)]="name" placeholder="e.g. Concert A" />
+    </label>
+    <label class="field">
+      Starts at
+      <input type="datetime-local" name="startsAt" [(ngModel)]="startsAt" />
+    </label>
+    <label class="field">
+      Total stock
+      <input type="number" name="totalStock" min="1" [(ngModel)]="totalStock" placeholder="100" />
+    </label>
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Creating…' : 'Create event' }}
+    </button>
+  </form>
+
+  @if (created(); as ev) {
+    <div class="card created">
+      <p>✅ Created event <strong>#{{ ev.id }}</strong> — "{{ ev.name }}"</p>
+      <div class="row">
+        <a [routerLink]="['/events', ev.id]">Open event →</a>
+        <a routerLink="/">Go to catalog →</a>
+      </div>
+    </div>
+  }
+</section>

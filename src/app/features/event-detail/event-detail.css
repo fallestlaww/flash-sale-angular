@@ -1,0 +1,32 @@
+.detail-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.stat__label {
+  color: var(--text-muted);
+}
+
+.stat__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.placeholder {
+  border-style: dashed;
+}
+
+.page a {
+  color: var(--accent);
+  text-decoration: none;
+}
