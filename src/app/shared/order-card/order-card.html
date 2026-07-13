@@ -1,0 +1,24 @@
+<div class="order-card">
+  <div class="order-card__head">
+    <div class="order-card__title">
+      Order #{{ current().orderId }}
+      <span class="muted">· event #{{ current().eventId }} · qty {{ current().qty }}</span>
+    </div>
+    <app-status-badge [status]="current().status" />
+  </div>
+
+  <div class="order-card__body">
+    @if (current().status === 'HELD' && !timedOut()) {
+      <app-hold-timer [seconds]="remaining()" />
+      <div class="order-card__actions">
+        <button type="button" (click)="pay()" [disabled]="busy()">Pay</button>
+        <button type="button" class="ghost" (click)="cancel()" [disabled]="busy()">Cancel</button>
+      </div>
+    } @else if (timedOut()) {
+      <span class="muted">Time's up — verifying…</span>
+      <button type="button" class="ghost" (click)="recheck()" [disabled]="busy()">Check now</button>
+    } @else {
+      <span class="muted">Created {{ current().createdAt | date: 'short' }}</span>
+    }
+  </div>
+</div>

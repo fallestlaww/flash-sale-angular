@@ -4,11 +4,13 @@ import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Subject, catchError, map, merge, of, switchMap } from 'rxjs';
 import { ApiService } from '../../core/api.service';
-import { AppError, EventResponse } from '../../core/models';
+import { AppError, EventResponse, OrderResponse } from '../../core/models';
+import { ReserveForm } from '../../shared/reserve-form/reserve-form';
+import { OrderCard } from '../../shared/order-card/order-card';
 
 @Component({
   selector: 'app-event-detail',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, ReserveForm, OrderCard],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.css',
@@ -23,6 +25,7 @@ export class EventDetail {
   readonly loading = signal(false);
   readonly notFound = signal(false);
   readonly loadError = signal(false);
+  readonly createdOrders = signal<OrderResponse[]>([]);
 
   constructor() {
     merge(toObservable(this.id), this.refresh$)
@@ -58,5 +61,9 @@ export class EventDetail {
 
   refresh(): void {
     this.refresh$.next();
+  }
+
+  onReserved(order: OrderResponse): void {
+    this.createdOrders.update((list) => [order, ...list]);
   }
 }

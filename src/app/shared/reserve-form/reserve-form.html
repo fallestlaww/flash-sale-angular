@@ -1,0 +1,9 @@
+<div class="reserve">
+  <label class="field">
+    Quantity
+    <input type="number" min="1" [(ngModel)]="qty" [ngModelOptions]="{ standalone: true }" />
+  </label>
+  <button type="button" (click)="reserve()" [disabled]="submitting()">
+    {{ submitting() ? 'Reserving…' : 'Reserve' }}
+  </button>
+</div>

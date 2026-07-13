@@ -1,0 +1,29 @@
+<section class="page">
+  <div class="orders-head">
+    <h1>My orders</h1>
+    <button type="button" class="linkish" (click)="load()">Refresh</button>
+  </div>
+
+  @if (loading()) {
+    <p class="muted">Loading…</p>
+  } @else if (orders().length > 0) {
+    <div class="list">
+      @for (o of orders(); track o.orderId) {
+        <app-order-card [order]="o" />
+      }
+    </div>
+  } @else if (loadError()) {
+    <div class="card empty">
+      <p>Couldn't load your orders.</p>
+      <p class="muted">
+        Is the backend running?
+        <button type="button" class="linkish" (click)="load()">Retry</button>
+      </p>
+    </div>
+  } @else {
+    <div class="card empty">
+      <p>No orders yet.</p>
+      <p class="muted">Reserve one from an <a routerLink="/">event</a>.</p>
+    </div>
+  }
+</section>
