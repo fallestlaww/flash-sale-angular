@@ -1,0 +1,16 @@
+<header class="topbar">
+  <div class="brand">⚡ Flash-Sale</div>
+  <nav class="nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Catalog</a>
+    <a routerLink="/orders" routerLinkActive="active">My orders</a>
+    <a routerLink="/admin" routerLinkActive="active">Admin</a>
+    <a routerLink="/demo" routerLinkActive="active">Demo</a>
+  </nav>
+  <app-user-switcher />
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>
+
+<app-toaster />

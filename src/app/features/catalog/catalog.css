@@ -1,0 +1,23 @@
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.result {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: var(--surface-2);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}

@@ -1,0 +1,10 @@
+<label class="user-switcher">
+  <span>X-User-Id</span>
+  <input
+    type="number"
+    min="1"
+    [ngModel]="currentUserId()"
+    (ngModelChange)="onChange($event)"
+    aria-label="Current user (X-User-Id)"
+  />
+</label>
