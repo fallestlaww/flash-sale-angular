@@ -1,0 +1,127 @@
+<section class="page">
+  <div class="head">
+    <h1>Redis playground</h1>
+    <p class="muted">
+      Goes through the backend: /api/admin/redis/* → sale-service → Self-Redis (:8840). Dev tool.
+    </p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Key / value</h2>
+      <label class="field">
+        Key <input [(ngModel)]="key" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <label class="field">
+        Value <input [(ngModel)]="value" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <label class="field">
+        TTL (sec, empty = none)
+        <input type="number" [(ngModel)]="ttlSeconds" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <div class="modes">
+        <label><input type="radio" value="set" [(ngModel)]="mode" [ngModelOptions]="{ standalone: true }" /> set</label>
+        <label><input type="radio" value="nx" [(ngModel)]="mode" [ngModelOptions]="{ standalone: true }" /> nx</label>
+        <label><input type="radio" value="xx" [(ngModel)]="mode" [ngModelOptions]="{ standalone: true }" /> xx</label>
+      </div>
+      <div class="row">
+        <button (click)="doSet()">Set</button>
+        <button class="ghost" (click)="doGet()">Get</button>
+        <button class="ghost" (click)="doDelete()">Delete</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>TTL</h2>
+      <label class="field">
+        TTL to set (sec)
+        <input type="number" [(ngModel)]="expireTtl" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <div class="row">
+        <button (click)="doExpire()">Expire</button>
+        <button class="ghost" (click)="doTtl()">Get TTL</button>
+        <button class="ghost" (click)="doPersist()">Persist</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Counter (stock)</h2>
+      <label class="field">
+        By <input type="number" [(ngModel)]="by" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <div class="row">
+        <button (click)="doIncr()">Increment</button>
+        <button class="ghost" (click)="doDecr()">Decrement</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>CAS (hold gate)</h2>
+      <label class="field">
+        Expected <input [(ngModel)]="expected" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <label class="field">
+        New value <input [(ngModel)]="casValue" [ngModelOptions]="{ standalone: true }" />
+      </label>
+      <div class="row"><button (click)="doCas()">Compare-and-set</button></div>
+    </div>
+
+    <div class="card">
+      <h2>Admin</h2>
+      <div class="row wrap">
+        <button class="ghost" (click)="doStats()">Stats</button>
+        <button class="ghost" (click)="doSize()">Size</button>
+        <button class="ghost" (click)="doSnapshotSave()">Snapshot save</button>
+        <button class="ghost" (click)="doSnapshotLoad()">Snapshot load</button>
+        <button class="danger" (click)="doFlush()">Flush all</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>One-click scenarios (t:*)</h2>
+      <div class="row wrap">
+        <button class="ghost" (click)="run51()">5.1 set/get/ttl</button>
+        <button class="ghost" (click)="run52()">5.2 nx</button>
+        <button class="ghost" (click)="run53()">5.3 incr/decr</button>
+        <button class="ghost" (click)="run54()">5.4 CAS</button>
+        <button class="ghost" (click)="run55()">5.5 expire/persist</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Bulk fill (LRU eviction)</h2>
+      <p class="muted">
+        Fires N set requests (keys bulk:0..N). To see evictions, lower
+        selfredis.max-size (e.g. 100) and fill more than that.
+      </p>
+      <div class="row">
+        <label class="field">
+          Count (N)
+          <input type="number" min="1" [(ngModel)]="bulkN" [ngModelOptions]="{ standalone: true }" />
+        </label>
+        <button (click)="bulkFill()" [disabled]="bulkRunning()">
+          {{ bulkRunning() ? 'Filling…' : 'Bulk fill' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card log-card">
+    <div class="log-head">
+      <h2>Log</h2>
+      <button class="ghost" (click)="clearLog()">Clear</button>
+    </div>
+    @if (log().length === 0) {
+      <p class="muted">Run an operation above — responses appear here (newest first).</p>
+    } @else {
+      <ul class="log">
+        @for (e of log(); track e.id) {
+          <li [class.err]="!e.ok">
+            <span class="op">{{ e.op }}</span>
+            <span class="txt">{{ e.text }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

@@ -26,5 +26,10 @@ export const routes: Routes = [
     title: 'Demo lab',
     loadComponent: () => import('./features/demo/demo').then((m) => m.Demo),
   },
+  {
+    path: 'redis',
+    title: 'Redis playground',
+    loadComponent: () => import('./features/redis/redis').then((m) => m.Redis),
+  },
   { path: '**', redirectTo: '' },
 ];

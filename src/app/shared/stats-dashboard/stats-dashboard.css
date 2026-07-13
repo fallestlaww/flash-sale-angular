@@ -1,0 +1,54 @@
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dash__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dash__err {
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.6rem;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.tile--accent {
+  border-color: var(--accent);
+}
+
+.tile__v {
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile__l {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.spark-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
