@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SILENT } from './http-context';
 import {
   CreateEventRequest,
   CreateOrderRequest,
@@ -36,8 +37,10 @@ export class ApiService {
     return this.http.delete<OrderResponse>(`${this.base}/orders/${id}`);
   }
 
-  getOrder(id: number): Observable<OrderResponse> {
-    return this.http.get<OrderResponse>(`${this.base}/orders/${id}`);
+  getOrder(id: number, silent = false): Observable<OrderResponse> {
+    return this.http.get<OrderResponse>(`${this.base}/orders/${id}`, {
+      context: new HttpContext().set(SILENT, silent),
+    });
   }
 
   getCacheStats(): Observable<StatsResponse> {

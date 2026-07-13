@@ -51,4 +51,8 @@ export class Orders {
       this.loading.set(false);
     });
   }
+
+  onReReserved(order: OrderResponse): void {
+    this.orders.update((list) => [order, ...list]);
+  }
 }
