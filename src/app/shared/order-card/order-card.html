@@ -17,6 +17,11 @@
     } @else if (timedOut()) {
       <span class="muted">Time's up — verifying…</span>
       <button type="button" class="ghost" (click)="recheck()" [disabled]="busy()">Check now</button>
+    } @else if (current().status === 'EXPIRED') {
+      <span class="muted">Hold expired.</span>
+      <button type="button" class="ghost" (click)="reserveAgain()" [disabled]="busy()">
+        Reserve again
+      </button>
     } @else {
       <span class="muted">Created {{ current().createdAt | date: 'short' }}</span>
     }

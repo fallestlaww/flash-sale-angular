@@ -9,7 +9,7 @@
   } @else if (orders().length > 0) {
     <div class="list">
       @for (o of orders(); track o.orderId) {
-        <app-order-card [order]="o" />
+        <app-order-card [order]="o" (reReserved)="onReReserved($event)" />
       }
     </div>
   } @else if (loadError()) {

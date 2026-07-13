@@ -6,4 +6,13 @@
   <button type="button" (click)="reserve()" [disabled]="submitting()">
     {{ submitting() ? 'Reserving…' : 'Reserve' }}
   </button>
+  @if (lastKey()) {
+    <button type="button" class="ghost" (click)="resendSameKey()" [disabled]="resending()">
+      {{ resending() ? 'Resending…' : 'Resend same key' }}
+    </button>
+  }
 </div>
+
+@if (demoResult(); as r) {
+  <p class="demo-result">{{ r }}</p>
+}

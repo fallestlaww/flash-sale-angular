@@ -43,7 +43,7 @@
         <h2>Your reservations</h2>
         <div class="orders__list">
           @for (o of createdOrders(); track o.orderId) {
-            <app-order-card [order]="o" />
+            <app-order-card [order]="o" (reReserved)="onReserved($event)" />
           }
         </div>
         <a routerLink="/orders">See all my orders →</a>

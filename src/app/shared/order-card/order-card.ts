@@ -5,14 +5,20 @@ import {
   inject,
   input,
   linkedSignal,
+  output,
   signal,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, filter, interval, of, switchMap } from 'rxjs';
 import { ApiService } from '../../core/api.service';
 import { ClockService } from '../../core/clock.service';
+import { OrdersService } from '../../core/orders.service';
 import { AppError, OrderResponse } from '../../core/models';
 import { StatusBadge } from '../status-badge/status-badge';
 import { HoldTimer } from '../hold-timer/hold-timer';
+
+const POLL_MS = 5000;
 
 @Component({
   selector: 'app-order-card',
@@ -23,9 +29,11 @@ import { HoldTimer } from '../hold-timer/hold-timer';
 })
 export class OrderCard {
   readonly order = input.required<OrderResponse>();
+  readonly reReserved = output<OrderResponse>();
 
   private readonly api = inject(ApiService);
   private readonly clock = inject(ClockService);
+  private readonly orders = inject(OrdersService);
 
   readonly current = linkedSignal(() => this.order());
   private readonly deadlineMs = linkedSignal(() => {
@@ -42,6 +50,22 @@ export class OrderCard {
   });
 
   readonly timedOut = computed(() => this.current().status === 'HELD' && this.remaining() === 0);
+
+  constructor() {
+    interval(POLL_MS)
+      .pipe(
+        filter(() => this.current().status === 'HELD' && !this.busy()),
+        switchMap(() =>
+          this.api.getOrder(this.current().orderId, true).pipe(catchError(() => of(null))),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((o) => {
+        if (o) {
+          this.current.set(o);
+        }
+      });
+  }
 
   pay(): void {
     if (this.busy() || this.current().status !== 'HELD') {
@@ -74,6 +98,24 @@ export class OrderCard {
       next: (o) => this.settle(o),
       error: () => this.busy.set(false),
     });
+  }
+
+  reserveAgain(): void {
+    if (this.busy() || this.current().status !== 'EXPIRED') {
+      return;
+    }
+    this.busy.set(true);
+    const key = crypto.randomUUID();
+    this.api
+      .createOrder({ eventId: this.current().eventId, qty: this.current().qty }, key)
+      .subscribe({
+        next: (o) => {
+          this.orders.addOrderId(o.orderId);
+          this.reReserved.emit(o);
+          this.busy.set(false);
+        },
+        error: () => this.busy.set(false),
+      });
   }
 
   private settle(o: OrderResponse): void {

@@ -2,6 +2,7 @@
   display: flex;
   align-items: flex-end;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .field {
@@ -14,4 +15,19 @@
 
 .field input {
   width: 6rem;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--accent);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  filter: none;
+}
+
+.demo-result {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
 }

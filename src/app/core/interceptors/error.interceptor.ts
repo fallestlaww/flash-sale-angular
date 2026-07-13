@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../toast.service';
 import { AppError } from '../models';
+import { SILENT } from '../http-context';
 
 const MESSAGES: Record<number, string> = {
   400: 'Bad request',
@@ -27,7 +28,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           ? 'No connection to the server (network / CORS / proxy)'
           : backendMessage ?? MESSAGES[status] ?? `Error ${status}`;
 
-      toast.push(message, status >= 500 || status === 0 ? 'error' : 'warn');
+      if (!req.context.get(SILENT)) {
+        toast.push(message, status >= 500 || status === 0 ? 'error' : 'warn');
+      }
 
       const appError: AppError = { status, message };
       return throwError(() => appError);
