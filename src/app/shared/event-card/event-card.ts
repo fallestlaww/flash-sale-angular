@@ -12,9 +12,11 @@ import { EventResponse } from '../../core/models';
       <div class="event-card__name">{{ event().name }}</div>
       <div class="event-card__row">
         <span>{{ event().startsAt | date: 'medium' }}</span>
-        <span class="event-card__stock">stock: {{ event().totalStock }}</span>
+        <span class="event-card__stock" [class.event-card__stock--out]="remaining() === 0">
+          free: {{ remaining() }} / {{ event().totalStock }}
+        </span>
       </div>
-      <div class="event-card__hint">#{{ event().id }} · initial amount, not remaining</div>
+      <div class="event-card__hint">#{{ event().id }} · free after your holds/payments</div>
     </a>
   `,
   styles: `
@@ -45,6 +47,9 @@ import { EventResponse } from '../../core/models';
       color: var(--accent);
       font-weight: 600;
     }
+    .event-card__stock--out {
+      color: #dc2626;
+    }
     .event-card__hint {
       margin-top: 0.4rem;
       font-size: 0.75rem;
@@ -54,4 +59,6 @@ import { EventResponse } from '../../core/models';
 })
 export class EventCard {
   readonly event = input.required<EventResponse>();
+  /** Free tickets left after the current user's active holds/payments. */
+  readonly remaining = input.required<number>();
 }
