@@ -8,10 +8,6 @@ export interface Toast {
   message: string;
 }
 
-/**
- * Global toasts/banners. error.interceptor pushes messages here for
- * 400/404/409/410/429/503; features may add success/info manually.
- */
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   private seq = 0;

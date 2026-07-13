@@ -1,0 +1,43 @@
+<section class="page">
+  @if (loading()) {
+    <p class="muted">Loading…</p>
+  } @else if (notFound()) {
+    <div class="card">
+      <h1>Event not found</h1>
+      <p class="muted">Event #{{ id() }} does not exist (404).</p>
+      <a routerLink="/">← Back to catalog</a>
+    </div>
+  } @else if (loadError()) {
+    <div class="card">
+      <h1>Couldn't load event</h1>
+      <p class="muted">Event #{{ id() }} — request failed. Is the backend running?</p>
+      <div class="detail-head">
+        <button type="button" (click)="refresh()">Retry</button>
+        <a routerLink="/">← Back to catalog</a>
+      </div>
+    </div>
+  } @else if (event(); as ev) {
+    <div class="detail-head">
+      <div>
+        <h1>{{ ev.name }}</h1>
+        <p class="muted">Starts: {{ ev.startsAt | date: 'medium' }}</p>
+      </div>
+      <button type="button" (click)="refresh()">Refresh</button>
+    </div>
+
+    <div class="card">
+      <div class="stat">
+        <span class="stat__label">Total stock (initial)</span>
+        <span class="stat__value">{{ ev.totalStock }}</span>
+      </div>
+      <p class="muted">This is the initial amount, not the current remaining stock.</p>
+    </div>
+
+    <div class="card placeholder">
+      <h2>Reserve</h2>
+      <p class="muted">Reservation form arrives in phase FE-2.</p>
+    </div>
+
+    <a routerLink="/">← Back to catalog</a>
+  }
+</section>

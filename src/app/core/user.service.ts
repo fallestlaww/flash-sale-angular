@@ -2,10 +2,6 @@ import { Injectable, signal } from '@angular/core';
 
 const STORAGE_KEY = 'flash-sale.userId';
 
-/**
- * Current demo "user" (X-User-Id). No real auth: a value 1..N is picked in
- * UserSwitcher and persisted to localStorage.
- */
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly _currentUserId = signal<number>(this.load());

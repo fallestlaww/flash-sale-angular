@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-// All routes are lazy loadComponent to keep the bundle light.
 export const routes: Routes = [
   {
     path: '',
