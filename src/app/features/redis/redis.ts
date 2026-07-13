@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable, catchError, concat, forkJoin, map, of, tap } from 'rxjs';
 import { SelfRedisService } from '../../core/self-redis.service';
 import { AppError } from '../../core/models';
+import { StatsDashboard } from '../../shared/stats-dashboard/stats-dashboard';
 
 interface LogEntry {
   id: number;
@@ -18,7 +19,7 @@ interface Step {
 
 @Component({
   selector: 'app-redis',
-  imports: [FormsModule],
+  imports: [FormsModule, StatsDashboard],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './redis.html',
   styleUrl: './redis.css',
