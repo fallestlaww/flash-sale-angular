@@ -1,0 +1,23 @@
+<section class="page">
+  <h1>Event catalog</h1>
+  <p class="muted">FE-0 skeleton. The full catalog arrives in phase FE-1.</p>
+
+  <div class="card">
+    <h2>Connectivity check (FE-0 smoke)</h2>
+    <p class="muted">GET /events/:id through the dev proxy to sale-service :8080.</p>
+
+    <div class="row">
+      <label class="field">
+        Event ID
+        <input type="number" min="1" [(ngModel)]="probeId" />
+      </label>
+      <button type="button" (click)="probe()" [disabled]="loading()">
+        {{ loading() ? 'Loading…' : 'Check' }}
+      </button>
+    </div>
+
+    @if (lastEvent(); as ev) {
+      <pre class="result">{{ ev | json }}</pre>
+    }
+  </div>
+</section>
