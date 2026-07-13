@@ -6,10 +6,10 @@
 
   @if (loading()) {
     <p class="muted">Loading…</p>
-  } @else if (events().length > 0) {
+  } @else if (items().length > 0) {
     <div class="grid">
-      @for (ev of events(); track ev.id) {
-        <app-event-card [event]="ev" />
+      @for (item of items(); track item.event.id) {
+        <app-event-card [event]="item.event" [remaining]="item.remaining" />
       }
     </div>
   } @else if (loadError()) {
